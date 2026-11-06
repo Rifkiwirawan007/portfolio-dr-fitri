@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# backup & bahan mentah (tidak dipakai situs)
+before/
+_bahan/
+
+# vercel
+.vercel

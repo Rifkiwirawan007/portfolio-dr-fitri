@@ -1,0 +1,106 @@
+/* Gallery page (galeri.html): full-screen slider + collection grid. Uses the variables from site.css. */
+.page-galeri { --gpad: clamp(20px, 5vw, 80px); }
+
+/* ---------- slider ---------- */
+.gx { position: relative; isolation: isolate; overflow: hidden; height: 100svh; min-height: 600px; background: #0e0e10; color: #f4f4f2; }
+.gx-stage { position: absolute; inset: 0; z-index: -2; }
+.gx-bg, .gx-grow img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.intro .gx-bg { animation: gxZoom 2.2s var(--ease) both; }
+@keyframes gxZoom { from { transform: scale(1.12); } to { transform: scale(1); } }
+.gx-shade { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(8,8,10,0.78) 0%, rgba(8,8,10,0.5) 34%, rgba(8,8,10,0.12) 62%, rgba(8,8,10,0.25) 100%),
+    linear-gradient(0deg, rgba(8,8,10,0.7) 0%, rgba(8,8,10,0) 34%),
+    linear-gradient(180deg, rgba(8,8,10,0.6) 0%, rgba(8,8,10,0) 24%); }
+
+/* the card that grows into the new background */
+.gx-grow { position: absolute; z-index: 1; overflow: hidden; transition: top 1s var(--ease), left 1s var(--ease), width 1s var(--ease), height 1s var(--ease), border-radius 1s var(--ease); }
+.gx-grow.grow-full { top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 0 !important; }
+.gx-grow.fade-in { inset: 0; animation: gxFade 1s var(--ease) both; }
+@keyframes gxFade { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+
+/* copy */
+.gx-copy { position: absolute; left: var(--gpad); top: 50%; z-index: 2; width: min(44vw, 640px); transform: translateY(-46%); }
+.gx-line { display: block; overflow: hidden; padding-bottom: 0.08em; }
+.gx-line > span { display: block; transition: transform 0.5s cubic-bezier(0.7, 0, 0.84, 0); }
+.gx.text-out .gx-line > span { transform: translateY(-110%); }
+.gx:not(.text-out) .gx-line > span { transition: transform 0.9s var(--ease); }
+.gx .gx-desc .gx-line > span { transition-delay: 0.06s; }
+.gx.gx.text-in .gx-line > span { transform: translateY(110%); transition: none; }
+.gx-kicker { margin: 0 0 14px; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,244,242,0.8); }
+.gx-kicker .gx-line > span::before { content: ""; display: inline-block; width: 28px; height: 1px; margin-right: 12px; vertical-align: middle; background: currentColor; }
+.gx-title { margin: 0; font-family: var(--wide); font-stretch: 125%; font-weight: 900; font-size: clamp(2.6rem, 5.4vw, 6.2rem); line-height: 0.92; letter-spacing: -0.03em; text-transform: uppercase; text-wrap: balance; }
+.gx-desc { margin-top: 22px; max-width: 40ch; font-size: 15px; line-height: 1.75; color: rgba(244,244,242,0.78); }
+.gx-meta { display: flex; align-items: center; gap: 12px; margin-top: 26px; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; transition: opacity 0.4s; }
+.gx.text-out .gx-meta { opacity: 0; }
+.gx-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--accent, #d79a6b); box-shadow: inset 0 0 0 9px rgba(0,0,0,0.18); flex: none; }
+[data-theme="light"] .gx-dot { background: #d79a6b; }
+
+/* cards */
+.gx-cards { position: absolute; left: 52%; top: 50%; z-index: 2; display: flex; gap: 18px; margin: 0; padding: 0; list-style: none; transform: translateY(-34%); }
+.gx-card { flex: none; width: clamp(120px, min(12.5vw, 25vh), 220px); aspect-ratio: 2 / 3; transition: transform 0.9s var(--ease), opacity 0.6s; }
+.gx-card button { position: relative; display: block; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #222; color: #f4f4f2; text-align: left; cursor: pointer; box-shadow: 0 24px 50px -24px rgba(0,0,0,0.8); }
+.gx-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease); }
+.gx-card button::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0) 55%); }
+.gx-card-k, .gx-card-t { position: absolute; left: 14px; right: 14px; z-index: 1; }
+.gx-card-k { bottom: 50px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gx-card-t { bottom: 14px; min-height: 2.3em; display: flex; align-items: flex-end; font-family: var(--wide); font-stretch: 125%; font-weight: 800; font-size: 13px; line-height: 1.15; text-transform: uppercase; }
+.gx-card button:hover img { transform: scale(1.06); }
+.gx-card button:focus-visible { outline: 2px solid #f4f4f2; outline-offset: 3px; }
+.gx-cards.shift .gx-card { transform: translateX(calc(-100% - 18px)); }
+.gx-cards.shift .gx-card:first-child { opacity: 0; }
+.gx-card.enter { animation: gxCardIn 0.9s var(--ease) both; }
+@keyframes gxCardIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: none; } }
+.intro .gx-cards { animation: gxCardIn 1.2s var(--ease) 0.3s both; }
+
+/* bottom bar */
+.gx-ui { position: absolute; left: var(--gpad); right: var(--gpad); bottom: clamp(24px, 5vh, 48px); z-index: 2; display: flex; align-items: center; gap: 28px; }
+.gx-arrows { display: flex; gap: 12px; }
+.gx-btn { display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid rgba(244,244,242,0.4); border-radius: 50%; background: transparent; color: #f4f4f2; cursor: pointer; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+.gx-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.gx-btn:hover { background: #f4f4f2; border-color: #f4f4f2; color: #0e0e10; }
+.gx-progress { flex: 1; max-width: 520px; height: 2px; background: rgba(244,244,242,0.22); overflow: hidden; }
+.gx-progress i { display: block; height: 100%; background: #f4f4f2; transform: scaleX(0); transform-origin: left; }
+.gx-num { margin: 0 0 0 auto; font-family: var(--wide); font-stretch: 125%; font-weight: 800; font-size: clamp(2.4rem, 4.6vw, 4.8rem); line-height: 1; overflow: hidden; }
+
+/* ---------- collection grid (follows the theme) ---------- */
+.gx-all { padding-top: clamp(72px, 10vw, 128px); }
+.gx-all-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px 24px; margin-bottom: 40px; }
+.gx-all-head .h2 { flex: 1 1 auto; }
+.gx-all-count { color: var(--muted); font-size: 14px; }
+.gx-grid { columns: 3 280px; column-gap: 16px; margin: 0; padding: 0; list-style: none; }
+.gx-tile { break-inside: avoid; margin-bottom: 16px; }
+.gx-tile button { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: var(--surface); cursor: zoom-in; }
+.gx-tile img { width: 100%; height: auto; transition: transform 0.9s var(--ease); }
+.gx-tile-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 16px 14px; background: linear-gradient(0deg, rgba(0,0,0,0.7), rgba(0,0,0,0)); color: #f4f4f2; font-size: 12px; text-align: left; opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.5s var(--ease); }
+.gx-tile-cap b { display: block; font-size: 15px; font-weight: 600; }
+.gx-tile button:hover img { transform: scale(1.04); }
+.gx-tile button:hover .gx-tile-cap, .gx-tile button:focus-visible .gx-tile-cap { opacity: 1; transform: none; }
+.page-galeri .gx-all { padding-bottom: clamp(72px, 10vw, 128px); }
+
+/* nav: current page marker */
+.nav-home.is-current::after { transform: scaleX(1); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 860px) {
+  .gx { min-height: 560px; }
+  .gx-copy { top: auto; bottom: calc(clamp(24px, 5vh, 48px) + 64px + 170px); width: auto; right: var(--gpad); transform: none; }
+  .gx-title { font-size: clamp(2.2rem, 10vw, 3.4rem); }
+  .gx-desc { margin-top: 14px; font-size: 14px; }
+  .gx-meta { margin-top: 16px; }
+  .gx-cards { left: var(--gpad); top: auto; bottom: calc(clamp(24px, 5vh, 48px) + 68px); transform: none; gap: 12px; }
+  .gx-card { width: 104px; }
+  .gx-cards.shift .gx-card { transform: translateX(calc(-100% - 12px)); }
+  .gx-card-k { display: none; }
+  .gx-card-t { font-size: 10px; left: 10px; right: 10px; bottom: 10px; }
+  .gx-btn { width: 42px; height: 42px; }
+  .gx-shade { background: linear-gradient(0deg, rgba(8,8,10,0.85) 0%, rgba(8,8,10,0.55) 50%, rgba(8,8,10,0.15) 80%), linear-gradient(180deg, rgba(8,8,10,0.45) 0%, rgba(8,8,10,0) 22%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gx-line > span, .gx-card, .gx-grow { transition: none !important; animation: none !important; }
+}
+
+/* over the slider photo the navbar stays plain white (blend mode vanishes on bright photos) */
+.page-galeri .nav.on-photo { mix-blend-mode: normal; --ink: #f4f4f2; --line-2: rgba(255,255,255,0.45); text-shadow: 0 1px 12px rgba(0,0,0,0.45); }
+
+@media (max-width: 860px) { .gx-card-t { font-size: 11px; } .nav-home { padding: 12px 4px; } }
